@@ -31,6 +31,8 @@ class Params
   end
 
   def require(key)
+    raise AttributeNotFoundError unless @params.has_key?(key)
+    @params[key]
   end
 
   def permitted?(key)
@@ -46,19 +48,28 @@ class Params
   private
 
   def parse_www_encoded_form(www_encoded_form)
-    decoded_params = URI.decode_www_form(www_encoded_form)
-    
-    decoded_params.each do |arr|
-      
-      @params[arr[0]] = arr[1]
+    params = {}
+
+    key_values = URI.decode_www_form(www_encoded_form)
+    key_values.each do |full_key, value|
+      scope = params
+
+      key_seq = parse_key(full_key)
+      key_seq.each_with_index do |key, idx|
+        if (idx + 1) == key_seq.count
+          scope[key] = value
+        else
+          scope[key] ||= {}
+          scope = scope[key]
+        end
+      end
     end
-    
-    @params
-    # set parsed params with: @params[key] = value
+
+    params
   end
   
   # user[address][street] should return ['user', 'address', 'street']
   def parse_key(key)
-    
+    key.split(/\[|\]\[|\]/)
   end
 end
