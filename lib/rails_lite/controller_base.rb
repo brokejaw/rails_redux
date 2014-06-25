@@ -44,19 +44,17 @@ class ControllerBase
       @already_built_response = true
     end
   end
-
-  # use ERB and binding to evaluate templates
-  # pass the rendered html to render_content
+  
   def render(template_name)
     template_fname =
-      File.join("views", self.class.name.underscore, "#{template_name}.html.erb")
+      File.join("views", self.class.name.underscore,       "#{template_name}.html.erb")
+      
     render_content(
       ERB.new(File.read(template_fname)).result(binding),
       "text/html"
     )
   end
-
-  # method exposing a `Session` object
+  
   def session
     @session ||= Session.new(@req)
   end
