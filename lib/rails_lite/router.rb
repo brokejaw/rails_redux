@@ -2,13 +2,12 @@ class Route
   attr_reader :pattern, :http_method, :controller_class, :action_name
   
   def initialize(pattern, http_method, controller_class, action_name)
-    @pattern = pattern                   # eg /users/new
-    @http_method = http_method           # eg GET
+    @pattern = pattern                   # eg Regexp.new("^/users$")
+    @http_method = http_method           # eg :get
     @controller_class = controller_class # eg UsersController
     @action_name = action_name           # eg #index
   end
 
-  # checks if pattern matches path and method matches request method
   def matches?(req) #this calls our http methods in 
     http_method == req.request_method.downcase.to_sym && !!(pattern =~ req.path)
   end
@@ -23,9 +22,7 @@ class Route
       route_params[name] = match_data[name]
     end
 
-    @controller_class
-      .new(req, res, route_params)
-      .invoke_action(action_name)
+    @controller_class.new(req, res, route_params).invoke_action(action_name)
   end
 end
 
@@ -59,7 +56,7 @@ class Router
   # def get
   # => add_route()
 
-  # should return the route that matches this request
+  # returns the route object (or nil)
   def match(req)
     routes.find { |route| route.matches?(req) }
   end

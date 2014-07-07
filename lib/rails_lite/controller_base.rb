@@ -16,7 +16,7 @@ class ControllerBase
 
   # populate the response with content
   # set the responses content type to the given type
-  # later raise an error if the developer tries to double render
+  # later raise an error on double render
   def render_content(content, type)
     if already_built_response?
       raise "error"
@@ -45,6 +45,7 @@ class ControllerBase
     end
   end
   
+  # binding grabs all the templates instance variables
   def render(template_name)
     template_fname =
       File.join("views", self.class.name.underscore,       "#{template_name}.html.erb")
@@ -59,7 +60,7 @@ class ControllerBase
     @session ||= Session.new(@req)
   end
 
-  # use this with the router to call action_name (:index, :show, :create...)
+  # called from the router. 
   def invoke_action(name)
   end
 end
