@@ -51,10 +51,6 @@ class Router
       add_route(pattern, http_method, controller_class, action_name)
     end
   end
-  
-  # same as
-  # def get
-  # => add_route()
 
   # returns the route object (or nil)
   def match(req)
